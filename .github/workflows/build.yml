@@ -28,6 +28,15 @@ jobs:
           git clone --depth 1 -b "$SDK_BRANCH" "$SDK_REPO" sdk
           echo "SDK_COMMIT=$(git -C sdk rev-parse HEAD)" | tee -a "$GITHUB_ENV"
 
+      - name: Apply host compatibility patches
+        run: |
+          if [ -d patches/host ] && ls patches/host/*.patch >/dev/null 2>&1; then
+            for p in patches/host/*.patch; do
+              echo "applying $p"
+              git -C sdk apply --whitespace=nowarn "$GITHUB_WORKSPACE/$p"
+            done
+          fi
+
       - name: Apply SFT1200 board files
         run: ./scripts/apply-board.sh sdk
 
