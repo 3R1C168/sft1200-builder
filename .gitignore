@@ -1,0 +1,11 @@
+# 官方固件样本,不入库(大文件)
+firmware/
+*.squashfs
+# SDK/构建产物(若本地出现)
+sdk/
+dl/
+build_dir/
+staging_dir/
+# 系统
+.DS_Store
+Thumbs.db
