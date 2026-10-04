@@ -17,7 +17,7 @@ fsz="$(stat -c%s "$factory")"
 [ "$fsz" -gt 8388608 ] && [ "$fsz" -lt 134217728 ] || { echo "FAIL: factory size $fsz out of range"; exit 1; }
 
 # 命名须可识别机型(SF19A28-GL-SFT1200 profile 的 IMG_PREFIX 规则)
-ls "$BIN"/*/* 2>/dev/null | grep -qiE 'gl.?sft1200|SF19A28' || {
+find "$BIN" -type f -printf '%f\n' | grep -qiE 'gl.?sft1200' || {
   echo "FAIL: image name does not reference SFT1200 model"; exit 1; }
 
 echo "OK: factory=$factory ($fsz bytes)"
