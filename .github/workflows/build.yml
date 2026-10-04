@@ -1,0 +1,65 @@
+name: SFT1200 firmware build
+
+on:
+  workflow_dispatch:
+
+env:
+  TZ: Asia/Shanghai
+  SDK_REPO: https://github.com/Siflower/1806_SDK.git
+  SDK_BRANCH: release2.0.0
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install host dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential gawk git libncurses-dev zlib1g-dev libssl-dev \
+            flex quilt xsltproc libxml-parser-perl merge unzip wget file \
+            python3 python3-distutils device-tree-compiler swig
+
+      - name: Clone Siflower SDK
+        run: |
+          git clone --depth 1 -b "$SDK_BRANCH" "$SDK_REPO" sdk
+          echo "SDK_COMMIT=$(git -C sdk rev-parse HEAD)" | tee -a "$GITHUB_ENV"
+
+      - name: Apply SFT1200 board files
+        run: ./scripts/apply-board.sh sdk
+
+      - name: Setup feeds (pinned openwrt-18.06)
+        working-directory: sdk/openwrt-18.06
+        run: |
+          cp "$GITHUB_WORKSPACE/feeds.conf" feeds.conf
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      - name: Generate .config
+        run: ./scripts/gen-config.sh sdk/openwrt-18.06
+
+      - name: Download sources
+        working-directory: sdk/openwrt-18.06
+        run: make download -j8
+
+      - name: Build
+        working-directory: sdk/openwrt-18.06
+        run: |
+          echo "sdk=$SDK_REPO@$SDK_COMMIT" | tee build-info.txt
+          make -j"$(nproc)" || make V=s -j1
+
+      - name: Verify images
+        run: ./scripts/verify-image.sh sdk/openwrt-18.06
+
+      - name: Upload images (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: sft1200-images
+          path: |
+            sdk/openwrt-18.06/bin/targets/siflower/**/*.img
+            sdk/openwrt-18.06/bin/targets/siflower/**/*.tar
+            sdk/openwrt-18.06/build-info.txt
+          if-no-files-found: error
