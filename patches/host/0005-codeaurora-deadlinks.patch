@@ -1,0 +1,30 @@
+diff --git a/openwrt-18.06/package/firmware/ath10k-firmware/Makefile b/openwrt-18.06/package/firmware/ath10k-firmware/Makefile
+index 72b0f540d..6896113cf 100644
+--- a/openwrt-18.06/package/firmware/ath10k-firmware/Makefile
++++ b/openwrt-18.06/package/firmware/ath10k-firmware/Makefile
+@@ -391,7 +391,9 @@ define Download/qca99x0-board
+   FILE:=$(QCA99X0_BOARD_FILE)
+   HASH:=03711ac21e60ef59d3815e235eb721c0c22851b5410299411085aa6f2af45401
+ endef
+-$(eval $(call Download,qca99x0-board))
++# URL host source.codeaurora.org is dead (CodeAurora shutdown); package not enabled for SFT1200.
++# If ever needed, use the codelinaro mirror as in OpenWrt >= 21.02 qca-ath10k.mk.
++#$(eval $(call Download,qca99x0-board))
+ 
+ define Build/Compile
+ 
+diff --git a/openwrt-18.06/package/firmware/linux-firmware/qca_ath10k.mk b/openwrt-18.06/package/firmware/linux-firmware/qca_ath10k.mk
+index a7c5b13b8..303f74453 100644
+--- a/openwrt-18.06/package/firmware/linux-firmware/qca_ath10k.mk
++++ b/openwrt-18.06/package/firmware/linux-firmware/qca_ath10k.mk
+@@ -7,7 +7,9 @@ define Download/qca99x0-board
+   FILE:=$(QCA99X0_BOARD_FILE)
+   HASH:=03711ac21e60ef59d3815e235eb721c0c22851b5410299411085aa6f2af45401
+ endef
+-$(eval $(call Download,qca99x0-board))
++# URL host source.codeaurora.org is dead (CodeAurora shutdown); package not enabled for SFT1200.
++# If ever needed, use the codelinaro mirror as in OpenWrt >= 21.02 qca-ath10k.mk.
++#$(eval $(call Download,qca99x0-board))
+ 
+ Package/ath10k-firmware-qca4019 = $(call Package/firmware-default,ath10k qca4019 firmware)
+ define Package/ath10k-firmware-qca4019/install
