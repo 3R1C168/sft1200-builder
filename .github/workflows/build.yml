@@ -47,6 +47,19 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
+      - name: Patch feeds for modern host toolchain
+        working-directory: sdk/openwrt-18.06
+        run: |
+          # gcc 11 miscompiles perl 5.28 host miniperl at -O2 (miniperl segfaults).
+          # perl's compile line is "$cc ... $ccflags ... $optimize ...", so -Accflags=-O1
+          # is overridden by the default -O2; only -Doptimize lowers it. Idempotent.
+          if grep -q -- '-Doptimize=' feeds/packages/lang/perl/Makefile; then
+            sed -i 's/-Doptimize="-O2"/-Doptimize="-O1"/; s/-Doptimize=-O2/-Doptimize=-O1/' feeds/packages/lang/perl/Makefile
+          else
+            sed -i 's|\./Configure -der -Uusedl|./Configure -der -Doptimize=-O1 -Uusedl|' feeds/packages/lang/perl/Makefile
+          fi
+          grep -n -- 'Doptimize=' feeds/packages/lang/perl/Makefile
+
       - name: Generate .config
         run: ./scripts/gen-config.sh sdk/openwrt-18.06
 
