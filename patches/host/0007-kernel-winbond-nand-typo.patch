@@ -1,0 +1,12 @@
+--- a/linux-4.14.90-dev/linux-4.14.90/drivers/mtd/nand/spi/winbond.c
++++ b/linux-4.14.90-dev/linux-4.14.90/drivers/mtd/nand/spi/winbond.c
+@@ -84,8 +84,8 @@ static int w25n01kv_ecc_get_status(struct spinand_device *spinand,
+ 				   u8 status)
+ {
+ 	struct nand_device *nand = spinand_to_nand(spinand);
+-	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(0x30, &mbf);
+ 	u8 mbf = 0;
++	struct spi_mem_op op = SPINAND_GET_FEATURE_OP(0x30, &mbf);
+ 
+ 	switch (status & STATUS_ECC_MASK) {
+ 	case STATUS_ECC_NO_BITFLIPS:
