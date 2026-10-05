@@ -60,6 +60,12 @@ jobs:
           fi
           grep -n -- 'Doptimize=' feeds/packages/lang/perl/Makefile
 
+          # xtables-addons 2.14: backport ip_route_me_harder 4-arg signature (OpenWrt PR 14029)
+          if [ -d feeds/packages/net/xtables-addons/patches ]; then
+            cp "$GITHUB_WORKSPACE/patches/feeds/202-fix-route-me-harder.patch" feeds/packages/net/xtables-addons/patches/
+            echo "Installed 202-fix-route-me-harder.patch to xtables-addons"
+          fi
+
       - name: Generate .config
         run: ./scripts/gen-config.sh sdk/openwrt-18.06
 
