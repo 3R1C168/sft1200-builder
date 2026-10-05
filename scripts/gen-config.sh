@@ -10,6 +10,7 @@ cat >> "$OW/.config" <<'EOF'
 CONFIG_PACKAGE_luci=y
 CONFIG_PACKAGE_luci-i18n-base-zh-cn=y
 CONFIG_PACKAGE_luci-mod-admin-full=y
+CONFIG_PACKAGE_luci-theme-argon=y
 EOF
 make -C "$OW" defconfig
 echo "== .config generated =="

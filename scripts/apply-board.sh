@@ -27,3 +27,9 @@ fi
 echo "== overlay done =="
 grep -n 'GL_SFT1200' "$KDT/Makefile"
 ls "$TGT/sf19a28-fullmask/" | grep -i gl_sft1200
+
+if [ -d "$B/theme/luci-theme-argon" ]; then
+  mkdir -p "$OW/package/theme"
+  cp -a "$B/theme/luci-theme-argon" "$OW/package/theme/"
+  echo "copied argon theme to package/theme/"
+fi

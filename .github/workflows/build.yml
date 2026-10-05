@@ -87,7 +87,11 @@ jobs:
         with:
           name: sft1200-images
           path: |
+            sdk/openwrt-18.06/bin/targets/siflower/*.bin
+            sdk/openwrt-18.06/bin/targets/siflower/**/*.bin
+            sdk/openwrt-18.06/bin/targets/siflower/*.img
             sdk/openwrt-18.06/bin/targets/siflower/**/*.img
+            sdk/openwrt-18.06/bin/targets/siflower/*.tar
             sdk/openwrt-18.06/bin/targets/siflower/**/*.tar
             sdk/openwrt-18.06/build-info.txt
           if-no-files-found: error
