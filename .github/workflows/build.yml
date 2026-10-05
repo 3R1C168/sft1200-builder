@@ -95,3 +95,26 @@ jobs:
             sdk/openwrt-18.06/bin/targets/siflower/**/*.tar
             sdk/openwrt-18.06/build-info.txt
           if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: sft1200-images
+          path: images
+
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v$(date +'%Y.%m.%d-%H%M')"
+          bin_file=$(find images -name "*sysupgrade.bin" | head -1)
+          if [ -n "$bin_file" ]; then
+            cp "$bin_file" "images/openwrt-sft1200-sysupgrade.bin"
+            gh release create "$TAG" images/openwrt-sft1200-sysupgrade.bin images/build-info.txt               --title "SFT1200 Build $TAG"               --notes "Automated build release for GL-SFT1200 (with Argon Theme)"
+          fi
